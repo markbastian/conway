@@ -1,10 +1,32 @@
 <!DOCTYPE HTML>
 <html>
+<head>
+    <!-- Bootstrap core CSS -->
+    <link href="./bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 <body>
-<h1>Conway's Game of Life</h1>
-<canvas id="myCanvas" width="1000" height="1000"></canvas>
-<form><button id="reset">Reset</button></form>
+<div class="jumbotron">
+    <h1>Conway's Game of Life</h1>
+    <p>This is an implementation of Conway's Game of Life written entirely in Clojure/ClojureScript.</p>
+</div>
+<div class="container">
+    <canvas id="myCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
+</div>
+
+<div class="container">
+    <p class="lead">
+        <a href="#" id="reset" class="btn btn-lg btn-default">Reset</a>
+    </p>
+</div>
+
+<div class="inner cover">
+    <h1 class="cover-heading">The Rules</h1>
+    <p class="lead">Add rules here.</p>
+</div>
+
+<!--<form><button id="reset">Reset</button></form>-->
 <p>This is an implementation of Conway's Game of Life written entirely in Clojure/ClojureScript.</p>
 <script src="js/conway.js"></script>
+<script src="./bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
 </body>
 </html> 
