@@ -8,9 +8,9 @@
            (java.awt.image VolatileImage)))
 
 (defn panel [grid]
-  (let [pnl (proxy [JPanel] []
+  (doto (proxy [JPanel] []
     (paint [g]
-      (let [w (.getWidth this) 
+      (let [w (.getWidth this)
             h (.getHeight this)
             bg (Rectangle2D$Double. 0 0 w (.getHeight this))
             vimg (.createVolatileImage this w h (ImageCapabilities. true))
@@ -25,14 +25,9 @@
                                           (* j (/ h (count (get @grid i))))
                                           (/ w (count @grid))
                                           (/ h (count (get @grid i))))]
-              (do
-                (.setPaint g2d c)
-                (.fill g2d sq)))))
-        (.drawImage g vimg 0 0 this)
-        )))]
-    (do 
-      (add-watch grid :repaint (fn [_ _ _ _] (.repaint pnl)))
-    pnl)))
+              (do (.setPaint g2d c) (.fill g2d sq)))))
+        (.drawImage g vimg 0 0 this))))
+    (#(add-watch grid :repaint (fn [_ _ _ _] (.repaint %))))))
 
 (defn sim [grid]
   (future (loop []
@@ -62,4 +57,4 @@
 (defn -main [& args]
   (launch JFrame/EXIT_ON_CLOSE))
 
-(launch JFrame/DISPOSE_ON_CLOSE)
+;(launch JFrame/DISPOSE_ON_CLOSE)
