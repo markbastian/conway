@@ -17,8 +17,8 @@
 (defn sim-step [grid coord]
   (let [n-live (count-neighbors grid coord)]
     (if (= :alive (get-in grid coord))
-      (case n-live 
-        (2 3) :alive 
+      (case n-live
+        (2 3) :alive
         :dead)
       (if (= 3 n-live) :alive :dead))))
 
