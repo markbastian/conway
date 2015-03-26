@@ -3,11 +3,15 @@
 <head>
     <!-- Bootstrap core CSS -->
     <link href="./bootstrap-3.3.4-dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./syntaxhighlighter_3.0.83/styles/shCore.css" rel="stylesheet" type="text/css"/>
+    <link href="./syntaxhighlighter_3.0.83/styles/shThemeEmacs.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <div class="jumbotron">
-    <h1>Conway's Game of Life</h1>
-    <p>This is an implementation of Conway's Game of Life written entirely in Clojure/ClojureScript.</p>
+    <div class="container">
+        <h1>Conway's Game of Life</h1>
+        <p>Implemented entirely in Clojure/ClojureScript.</p>
+    </div>
 </div>
 <div class="container">
     <canvas id="myCanvas" width="400" height="400" style="border:1px solid #000000;"></canvas>
@@ -21,12 +25,62 @@
 
 <div class="inner cover">
     <h1 class="cover-heading">The Rules</h1>
-    <p class="lead">Add rules here.</p>
+    <p class="lead">Conway's Game of Life is a cellular automaton in which a population of cells evolves with the
+        following rules:
+    <ul>
+    <li>A living cell with only one or two neighbors dies</li>
+    <li>A living cell with two or three live neighbors survives</li>
+    <li>A living cell with greater than three neighbors dies</li>
+    <li>A dead cell with exactly three neighbors comes to life</li>
+    </ul>
+    </p>
 </div>
 
-<!--<form><button id="reset">Reset</button></form>-->
-<p>This is an implementation of Conway's Game of Life written entirely in Clojure/ClojureScript.</p>
+<div class="inner cover">
+    <h1 class="cover-heading">Implementation in Clojure</h1>
+    <p class="lead">This project was coded up in Clojure as an example of what can be done using the clj/cljs/cljx
+        integration. It was done in three main files: rules.cljx, swingui.clj, and canvasui.cljs.</p>
+</div>
+
+<div>
+<pre class="brush: clj">
+(ns conway.rules)
+
+(defn gen-cell[](if (> (Math/random) 0.7) :alive :dead))
+
+(defn seed-grid [rows cols]
+(vec (take rows (repeatedly (fn [] (vec (take cols (repeatedly gen-cell))))))))
+
+(defn neighbors [[i j]]
+(let [x ((juxt inc inc identity dec dec dec identity inc) i)
+y ((juxt identity inc inc inc identity dec dec dec) j)]
+(map vector x y)))
+
+(defn count-neighbors [grid coord]
+(let [n (map #(get-in grid %) (neighbors coord))]
+(count (filter #(= % :alive) n))))
+
+(defn sim-step [grid coord]
+(let [n-live (count-neighbors grid coord)]
+(if (= :alive (get-in grid coord))
+(case n-live
+(2 3) :alive
+:dead)
+(if (= 3 n-live) :alive :dead))))
+
+(defn step [grid]
+(into [] (for [i (range (count grid))]
+(into [] (for [j (range (count (get grid i)))]
+(sim-step grid [i j]))))))
+</pre>
+</div>
+
 <script src="js/conway.js"></script>
+<script src="./syntaxhighlighter_3.0.83/scripts/shCore.js"></script>
+<script type="text/javascript" src="./syntaxhighlighter_3.0.83/scripts/shBrushClojure.js"></script>
 <script src="./bootstrap-3.3.4-dist/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+</script>
 </body>
 </html> 
