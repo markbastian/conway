@@ -2,7 +2,7 @@
 
 (defn gen-cell[](if (> (Math/random) 0.7) :alive :dead))
 
-(defn seed-grid [rows cols] 
+(defn seed-grid [rows cols]
   (vec (take rows (repeatedly (fn [] (vec (take cols (repeatedly gen-cell))))))))
 
 (defn neighbors [[i j]]
@@ -26,3 +26,15 @@
   (into [] (for [i (range (count grid))]
           (into [] (for [j (range (count (get grid i)))]
                   (sim-step grid [i j]))))))
+
+;(defn step-j [grid i]
+;  (loop [j 0 g (transient [])]
+;    (if (< j (count (get grid i)))
+;      (recur (inc j) (conj! g (sim-step grid [i j])))
+;      (persistent! g))))
+;
+;(defn step [grid]
+;  (loop [i 0 v (transient [])]
+;    (if (< i (count grid))
+;      (recur (inc i) (conj! v (step-j grid i)))
+;      (persistent! v))))
