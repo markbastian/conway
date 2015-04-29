@@ -1,0 +1,50 @@
+Juxt is one of those weird Clojure functions that just doesn't make sense until you see it in action. However, once you get it, you love it. This short example shows a great use of the juxt function.<br />
+<div>
+    <br />
+    What does juxt do? It creates a function that is the application of a list of functions to a single argument. So, suppose you need both the sine and cosine of x for a given application. You could create two separate variables, like so:<br />
+    <br />
+    <div>
+<pre class="brush: clj">(defn sin-cos[theta]
+  (let[y (Math/sin theta)
+       x (Math/cos theta)]
+    [x y]))
+</pre>
+    </div>
+    <br />
+    However, it is more convenient to juxtapose the two items being computed into a single vector.</div>
+<div>
+    <br />
+    Here's a problem that builds on the above to show how nice juxt is:</div>
+<div>
+    <br />
+    You are given two angles in degrees and need to compute the signed distance between them. These angles aren't constrained to [0, 360). Here are a few examples of the desired output:<br />
+    <br /></div>
+<table style="border-collapse: collapse; border-color: #ccc; border-spacing: 0;"><tbody>
+<tr><th style="background-color: #f0f0f0; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: normal; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">First Angle</th><th style="background-color: #f0f0f0; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: normal; overflow: hidden; padding: 10px 5px; word-break: normal;">Second Angle</th><th style="background-color: #f0f0f0; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; font-weight: normal; overflow: hidden; padding: 10px 5px; word-break: normal;">Signed Distance</th></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">10</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">20</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">10</td></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">20</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">10</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">-10</td></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">10</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">20</td></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">10</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">-20</td></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">-350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">-20</td></tr>
+<tr><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">-350</td><td style="background-color: white; border-color: #ccc; border-style: solid; border-width: 1px; color: #333333; font-family: Arial, sans-serif; font-size: 14px; overflow: hidden; padding: 10px 5px; text-align: center; word-break: normal;">20</td></tr>
+</tbody></table>
+<div>
+    <br /></div>
+<div>
+    You can probably solve this problem with some combination of mod, rem, and/or quot, but I find it much easier to simply transform the angles to their cartesian vector form and do the math in that coordinate system. Recall that for unit vectors the dot product is a*b = cos theta, and the sign of the cross product indicates the the direction of rotation. So, I can use dot to compute my angular offset and cross to determine the direction.<br />
+    <br />
+    With that knowledge, here's my function to compute angular distances:<br />
+    <br /></div>
+<div>
+<pre class="brush: clj">(defn angular-delta
+"Compute the difference between two angles, where angles are in degrees."
+[a b]
+(let [[u v] (map (juxt #(Math/cos %) #(Math/sin %))
+                 (map #(Math/toRadians %) [a b]))
+      theta (Math/acos (reduce + (map * u v)))
+      sign (Math/signum (reduce - (map * u (reverse v))))]
+  (Math/toDegrees (* sign theta))))
+</pre>
+</div>
+<br />
+<br />

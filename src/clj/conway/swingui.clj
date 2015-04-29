@@ -7,10 +7,11 @@
            (java.awt.event ActionListener)
            (java.awt.image VolatileImage)))
 
-(defn panel [grid]
+(defn panel [grid-ref]
   (doto (proxy [JPanel] []
     (paint [g]
-      (let [w (.getWidth this)
+      (let [{:keys [grid cx cy]} @grid-ref
+            w (.getWidth this)
             h (.getHeight this)
             bg (Rectangle2D$Double. 0 0 w (.getHeight this))
             vimg (.createVolatileImage this w h (ImageCapabilities. true))
@@ -18,16 +19,14 @@
         (doto g2d
           (.setPaint Color/BLACK)
           (.fill bg))
-        (doseq [i (range (count @grid))]
-          (doseq [j (range (count (get @grid i)))]
-            (let [c (if (= :alive (get-in @grid [i j])) Color/GREEN Color/RED)
-                  sq (Rectangle2D$Double. (* i (/ w (count @grid)))
-                                          (* j (/ h (count (get @grid i))))
-                                          (/ w (count @grid))
-                                          (/ h (count (get @grid i))))]
-              (do (.setPaint g2d c) (.fill g2d sq)))))
+        (doseq [i (range cx) j (range cy) :when (grid [i j])]
+          (let [sq (Rectangle2D$Double. (* i (/ (double w) cx))
+                                        (* j (/ (double h) cy))
+                                        (/ (double w) cx)
+                                        (/ (double h) cy))]
+            (do (.setPaint g2d Color/GREEN) (.fill g2d sq))))
         (.drawImage g vimg 0 0 this))))
-    (#(add-watch grid :repaint (fn [_ _ _ _] (.repaint %))))))
+    (#(add-watch grid-ref :repaint (fn [_ _ _ _] (.repaint %))))))
 
 (defn sim [grid]
   (future (loop []
@@ -43,10 +42,10 @@
     (.add (doto (JButton. "Reset")
             (.addActionListener
               (reify ActionListener
-                (actionPerformed [_ _] (reset! grid-ref (rules/seed-grid 100 100)))))))))
+                (actionPerformed [_ _] (reset! grid-ref (rules/seed-grid @grid-ref)))))))))
 
 (defn launch [exit-behavior]
-  (let [grid (atom (rules/seed-grid 100 100))]
+  (let [grid (atom (rules/seed-grid {:cx 200 :cy 200}))]
     (doto (JFrame. "Conway's Game of Life")
       (.setSize 800 600)
       (.setDefaultCloseOperation exit-behavior)
@@ -57,4 +56,4 @@
 (defn -main [& args]
   (launch JFrame/EXIT_ON_CLOSE))
 
-;(launch JFrame/DISPOSE_ON_CLOSE)
+;(launch JFrame/EXIT_ON_CLOSE)
